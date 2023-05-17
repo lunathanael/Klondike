@@ -7,7 +7,7 @@
 
 /* FUNCTIONS */
 void Fill_deck(DECK* deck);
-void Shuffle_deck(CARDS deck[]);
+void Shuffle_deck(DECK* deck);
 
 
 

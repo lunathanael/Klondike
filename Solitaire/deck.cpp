@@ -18,10 +18,10 @@ void Fill_deck(DECK* deck) {
 
 
 
-void Shuffle_deck(CARDS deck[])
+void Shuffle_deck(DECK*deck)
 {
     // time-based seed
     unsigned seed = 0;
-    shuffle(deck, deck + DECK_SIZE, default_random_engine(seed));
+    shuffle(deck->cards, deck->cards + DECK_SIZE, default_random_engine(seed));
 }
 

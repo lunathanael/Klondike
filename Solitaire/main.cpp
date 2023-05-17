@@ -12,7 +12,7 @@ using namespace std;
 int main() {
 	DECK deck;
 	Fill_deck(&deck);
-
+	Shuffle_deck(&deck);
 	Print_deck(&deck);
 
 
