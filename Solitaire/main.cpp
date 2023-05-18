@@ -82,42 +82,94 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 		cout << "Invalid command size!\n";
 	}
 	else if (tokens.at(1) == "T") {
-		Turn_stock(&gamestate->stock);
+		try {
+			if (!Turn_stock(&gamestate->stock)) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;
+			}
+		}
+		catch (...) {
+			cout << "Formatting error!\n";
+		}
 	}
 	else if (tokens.at(1) == "pp") {
+		try {
+			int input_index = stoi(tokens.at(2));
+			int pile_from = (input_index / 10) - 1;
+			int card_index = input_index % 10;
+			int pile_to = stoi(tokens.at(3)) - 1;
+			if (!Pile_to_pile(&gamestate->piles[pile_from], &gamestate->piles[pile_to], card_index)) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;	
+			}
+		}
+		catch (...) {
+			cout << "Formatting error!\n";
+		}
 	}
 	else if (tokens.at(1) == "sp") {
+		try {
+			int pile_to = stoi(tokens.at(2)) - 1;
+			if (!Stock_to_pile(&gamestate->piles[pile_to], &gamestate->stock)) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;
+			}
+		}
+		catch (...) {
+			cout << "Formatting error!\n";
+		}
 	}
 	else if (tokens.at(1) == "sf") {
-		if (tokens.at(2).length() != 1) {
-			cout << "Formatting error!\n";
-			return;
+		try {
+			if (tokens.at(2).length() != 1) {
+				cout << "Formatting error!\n";
+				return;
+			}
+			if (!Stock_to_foundation(&gamestate->stock, &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]])) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;
+			}
 		}
-		Stock_to_foundation(&gamestate->stock, &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]]);
+		catch (...) {
+			cout << "Formatting error!\n";
+		}
 	}
 	else if (tokens.at(1) == "pf") {
-		if (tokens.at(2).length() != 1) {
-			cout << "Formatting error!\n";
-			return;
+		try {
+			int pile = stoi(tokens.at(2)) - 1;
+			if (!Pile_to_foundation(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(3)[0]]], char_suits[tokens.at(3)[0]])) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;
+			}
 		}
-		if (tokens.at(3).length() != 1) {
+		catch (...) {
 			cout << "Formatting error!\n";
-			return;
 		}
-		int pile = stoi(tokens.at(2)) - 1;
-		Pile_to_foundation(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(3)[0]]], char_suits[tokens.at(3)[0]]);
 	}
 	else if (tokens.at(1) == "fp") {
-		if (tokens.at(2).length() != 1) {
-			cout << "Formatting error!\n";
-			return;
+		try {
+			int pile = stoi(tokens.at(3)) - 1;
+			if (!Foundation_to_pile(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]])) {
+				cout << "Invalid move!\n";
+			}
+			else {
+				++gamestate->moves;
+			}
 		}
-		if (tokens.at(3).length() != 1) {
+
+		catch (...) {
 			cout << "Formatting error!\n";
-			return;
 		}
-		int pile = stoi(tokens.at(3)) - 1;
-		Foundation_to_pile(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]]);
 	}
 	else {
 		cout << "Invalid Command!\n";
@@ -196,17 +248,6 @@ int main() {
 				cout << "Unknown command\n";
 				break;
 			}
-		}
-		continue;
-		int stock;
-		int foundation;
-		cin >> stock >> foundation;
-
-		if (stock == 1) {
-			Stock_to_foundation(&gamestate.stock, &gamestate.foundations[foundation - 1], foundation);
-		}
-		else {
-			Turn_stock(&gamestate.stock);
 		}
 	}
 

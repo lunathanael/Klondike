@@ -131,7 +131,6 @@
     <ClCompile Include="deck.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makefile" />
-    <ClCompile Include="moves.cpp" />
     <ClCompile Include="table.cpp" />
   </ItemGroup>
   <ItemGroup>

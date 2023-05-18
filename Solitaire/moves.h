@@ -33,6 +33,7 @@ static inline bool Turn_stock(STOCK* stock) {
 			return true;
 		}
 	}
+	return true;
 };
 
 static inline bool Stock_to_foundation(STOCK* stock, FOUNDATION* foundation, int foundationIndex) {
@@ -62,7 +63,7 @@ static inline bool Stock_to_foundation(STOCK* stock, FOUNDATION* foundation, int
 		stock->stack[stock->faceCard] = NO_CARD;
 		Turn_stock(stock);
 		--stock->cardsLeft;
-  return true;
+		return true;
 	}
 	return false;
 }
@@ -92,7 +93,7 @@ static inline bool Pile_to_foundation(PILE* pile,  FOUNDATION* foundation, int f
 		// remove pile card
 		pile->pile[--pile->cardNumber] = NO_CARD;
 		Update_pile(pile);
-  return true;
+		return true;
 	}
 	return false;
 }
@@ -122,27 +123,83 @@ static inline bool Foundation_to_pile(PILE* pile,  FOUNDATION* foundation, int f
 
 		// remove foundation card;
 		foundation->stack[--foundation->cards] = NO_CARD;
-  return true;
+		return true;
 	}
 	return false;
 }
 
-static inline void Pile_to_pile(PILE* pile, int card_index, FOUNDATION* foundation, int foundationIndex) {
-	if (pile->cardNumber != 0) { // cards exist
-		int card_index_from_bottom = pile->cardNumber - card_index;
-		if (card_index >= pile->revealed) { // Card is revealed
-			
+
+static inline bool Pile_to_pile(PILE* pile_from, PILE* pile_to, int card_index) {
+	if (pile_from->cardNumber > 0) {
+		CARDS card_from = pile_from->pile[pile_from->cardNumber - card_index];
+		if ((pile_from->cardNumber - card_index) < pile_from->revealed) {
+			return false;
 		}
+		if (pile_to->cardNumber != 0) {
+			CARDS card_to = pile_to->pile[pile_to->cardNumber - 1];
+			if (get_card_rank(card_from) == KING) {
+				return false;
+			}
+			if ((get_card_suit(card_from) >> 1) && (get_card_suit(card_to) >> 1)) {
+				return false;
+			}
+			if ((get_card_rank(card_from) + 1) != get_card_rank(card_to)) {
+				return false;
+			}
+		}
+		for (int card = 0; card < card_index; ++card) {
+			int moved_from_index = (pile_from->cardNumber - card_index + card);
+			int moved_to_index = (pile_to->cardNumber + card);
+
+			CARDS card_moved = pile_from->pile[moved_from_index];
+
+			pile_to->pile[moved_to_index] = card_moved;
+			++pile_to->cardNumber;
+
+			pile_from->pile[moved_from_index] = NO_CARD;
+			--pile_from->cardNumber;
+		}
+		Update_pile(pile_from);
+		Update_pile(pile_to);
+
+		return true;
 	}
-	return;
+	return false;
 }
 
 
 
-static inline void Move_pile() {
+static inline bool Stock_to_pile(PILE* pile_to, STOCK* stock) {
+	if (stock->cardsLeft > 0) {
+		CARDS card_from = stock->stack[stock->faceCard];
+		if (pile_to->cardNumber != 0) {
+			CARDS card_to = pile_to->pile[pile_to->cardNumber - 1];
+			if (get_card_rank(card_from) == KING) {
+				return false;
+			}
+			if ((get_card_suit(card_from) >> 1) & (get_card_suit(card_to) >> 1)) {
+				return false;
+			}
+			if ((get_card_rank(card_from) + 1) != get_card_rank(card_to)) {
+				return false;
+			}
+		}
+		int moved_from_index = (stock->faceCard);
+		int moved_to_index = (pile_to->cardNumber);
 
+		pile_to->pile[moved_to_index] = card_from;
+		++pile_to->cardNumber;
 
-};
+		stock->stack[moved_from_index] = NO_CARD;
+		Turn_stock(stock);
+		--stock->cardsLeft;
+		Update_pile(pile_to);
+
+		return true;
+	}
+	return false;
+}
+
 
 
 

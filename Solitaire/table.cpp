@@ -24,6 +24,23 @@ std::map<char, int> char_ranks = {
 const char ascii_ranks[] = "A23456789TJQK";
 
 
+
+
+static inline bool Game_over(TABLE* gamestate) {
+
+    for (int foundation = 0; foundation < NUMBER_OF_SUITS; ++foundation) {
+        if (gamestate->foundations[foundation].cards != CARDS_IN_SUIT) {
+            goto No_moves;
+        }
+    }
+    gamestate->game_result = 1;
+    return true;
+No_moves:
+
+    return false;
+}
+
+
 //static inline 
 void Print_stock_card(STOCK* stock) {
     if (stock->faceCard == -1 || stock->faceCard == (STOCK_SIZE + 1)) {
@@ -95,6 +112,7 @@ void Print_gamestate(TABLE* gamestate) {
 
     cout << "\n                                          C  S  D  H ";
     cout << "\nPILES:";
+    cout << "                 MOVES: " << gamestate->moves << endl;
 
     for (PILES pile = PILE7; pile >= 0; --pile) {
         // Each card
@@ -102,6 +120,23 @@ void Print_gamestate(TABLE* gamestate) {
         Print_pile(&gamestate->piles[pile]);
     }
     cout << endl;
+    if (Game_over(gamestate)) {
+        cout << "Game result: ";
+        switch (gamestate->game_result)
+        {
+            case (1):
+            {
+                cout << "Victory";
+                break;
+            }
+            case (-1):
+            {
+                cout << "Loss";
+                break;
+            }
+        }
+        cout << endl;
+    }
 }
 
 
