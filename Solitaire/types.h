@@ -86,6 +86,7 @@ struct TABLE {
 	FOUNDATION foundations[NUMBER_OF_SUITS];
 	STOCK stock;
 	PILE piles[NUMBER_OF_PILES];
+	int moves = 0;
 	TABLE() {
 		for (int i = 0; i < NUMBER_OF_PILES; ++i) {
 			piles[i].revealed = i; // by index
