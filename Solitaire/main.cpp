@@ -96,8 +96,28 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 		Stock_to_foundation(&gamestate->stock, &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]]);
 	}
 	else if (tokens.at(1) == "pf") {
+		if (tokens.at(2).length() != 1) {
+			cout << "Formatting error!\n";
+			return;
+		}
+		if (tokens.at(3).length() != 1) {
+			cout << "Formatting error!\n";
+			return;
+		}
+		int pile = stoi(tokens.at(2));
+		Pile_to_foundation(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(3)[0]]], char_suits[tokens.at(3)[0]]);
 	}
 	else if (tokens.at(1) == "fp") {
+		if (tokens.at(2).length() != 1) {
+			cout << "Formatting error!\n";
+			return;
+		}
+		if (tokens.at(3).length() != 1) {
+			cout << "Formatting error!\n";
+			return;
+		}
+		int pile = stoi(tokens.at(3));
+		Foundation_to_pile(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]]);
 	}
 	else {
 		cout << "Invalid Command!\n";
