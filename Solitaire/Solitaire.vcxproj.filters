@@ -44,5 +44,8 @@
     <ClInclude Include="moves.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="io.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

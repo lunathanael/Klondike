@@ -2,7 +2,10 @@
 #define TABLE_H
 
 #include "types.h"
+#include <map>
 
+
+extern std::map<char, int> char_suits;
 
 
 /* FUNCTIONS */

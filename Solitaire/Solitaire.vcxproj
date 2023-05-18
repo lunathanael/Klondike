@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deck.h" />
+    <ClInclude Include="io.h" />
     <ClInclude Include="moves.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="types.h" />
