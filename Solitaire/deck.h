@@ -9,6 +9,7 @@
 void Fill_deck(DECK* deck);
 void Shuffle_deck(DECK* deck);
 
+TABLE Start_game();
 
 
 #endif

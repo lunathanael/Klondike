@@ -1,6 +1,6 @@
 #include "types.h"
-#include "deck.h"
 #include "table.h"
+#include "moves.h"
 
 #include <iostream>
 
@@ -10,11 +10,11 @@ using namespace std;
 
 
 int main() {
-	DECK deck;
-	Fill_deck(&deck);
-	Shuffle_deck(&deck);
-	Print_deck(&deck);
-
+	TABLE gamestate = Start_game();
+	while (1) {
+		getchar();
+		Print_gamestate(&gamestate);
+	}
 
 	return 0;
 }

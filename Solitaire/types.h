@@ -10,10 +10,9 @@
 
 static constexpr int DECK_SIZE = (NUMBER_OF_SUITS * CARDS_IN_SUIT);
 static constexpr int ALL_DECKS_SIZE = (NUMBER_OF_DECKS * DECK_SIZE);
-static constexpr int STOCK_SIZE = (ALL_DECKS_SIZE - (NUMBER_OF_PILES * (NUMBER_OF_PILES + 1) / 2));
+static constexpr int STOCK_SIZE = (ALL_DECKS_SIZE - (NUMBER_OF_PILES * (NUMBER_OF_PILES + 1) / 2)); // last element is the no face card
 
 static constexpr int MAX_PILE_SIZE = (CARDS_IN_SUIT + NUMBER_OF_PILES);
-
 
 enum RANKS : int{
 	ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, NO_RANK
@@ -37,39 +36,72 @@ enum PILES : int {
 
 
 
-typedef struct CARD {
+struct CARD {
 	RANKS rank;
 	SUITS suit;
 	bool revealed = false;
 };
 
+#include <algorithm>
 
-typedef struct DECK {
+struct DECK {
 	CARDS cards[DECK_SIZE];
+	int currentCard = 0;
+
+	DECK() {
+		std::fill_n(cards, DECK_SIZE, NO_CARD);
+	}
 };
 
 
-typedef struct FOUNDATION {
+struct FOUNDATION {
 	CARDS stack[CARDS_IN_SUIT];
 	int cards = 0;
+	FOUNDATION() {
+		std::fill_n(stack, CARDS_IN_SUIT, NO_CARD);
+	}
 };
 
-typedef struct STOCK {
+
+struct STOCK {
 	CARDS stack[STOCK_SIZE];
-	int faceCard = 0;
+	int cardsLeft = STOCK_SIZE;
+	int faceCard = -1; // No card at -1 and STOCK_SIZE
+	STOCK() {
+		std::fill_n(stack, STOCK_SIZE, NO_CARD);
+	}
 };
 
-typedef struct PILE {
-	CARDS pile[MAX_PILE_SIZE]; // highest pile
-	int revealed = 1;
+struct PILE {
+	CARDS pile[MAX_PILE_SIZE];
+	int revealed = 0;
+	int cardNumber = 0;
+	PILE() {
+		std::fill_n(pile, MAX_PILE_SIZE, NO_CARD);
+	}
 };
 
 
-typedef struct TABLE {
+struct TABLE {
 	FOUNDATION foundations[NUMBER_OF_SUITS];
 	STOCK stock;
 	PILE piles[NUMBER_OF_PILES];
+	TABLE() {
+		for (int i = 0; i < NUMBER_OF_PILES; ++i) {
+			piles[i].revealed = i; // by index
+			piles[i].cardNumber = i + 1;
+		}
+	}
 };
+
+static constexpr int get_card_suit(CARDS card) {
+	return (card / 13);
+}
+
+static constexpr int get_card_rank(CARDS card) {
+	return (card % 13);
+}
+
 
 #define ENABLE_INCR_OPERATORS_ON(T)                                \
 inline T& operator++(T& d) { return d = T(int(d) + 1); }           \
@@ -77,6 +109,8 @@ inline T& operator--(T& d) { return d = T(int(d) - 1); }
 
 
 ENABLE_INCR_OPERATORS_ON(CARDS)
+ENABLE_INCR_OPERATORS_ON(PILES)
+ENABLE_INCR_OPERATORS_ON(SUITS)
 
 
 

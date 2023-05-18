@@ -6,11 +6,11 @@
 
 
 /* FUNCTIONS */
-void initGame();
-void Print_deck(DECK* deck);
+TABLE Start_game();
 
-
-
+void Print_stock_card(STOCK* stock);
+void Print_stack(CARDS cards[], int number_of_cards);
+void Print_gamestate(TABLE* gamestate);
 
 
 

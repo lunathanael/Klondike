@@ -1,6 +1,7 @@
 #include "deck.h"
 
 #include <random>
+#include <ctime>
 #include <algorithm>
 
 using namespace std;
@@ -21,7 +22,8 @@ void Fill_deck(DECK* deck) {
 void Shuffle_deck(DECK*deck)
 {
     // time-based seed
-    unsigned seed = 0;
+    unsigned seed = time(NULL);
     shuffle(deck->cards, deck->cards + DECK_SIZE, default_random_engine(seed));
 }
+
 
