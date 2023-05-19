@@ -59,7 +59,7 @@ static void Parse_help(vector<string> tokens) {
 			cout << "		pf	move a card from a pile to a foundation.\n";
 			cout << "		fp	move a card from a foundation to a pile.\n\n";
 			cout << "	source - location to move card from\n";
-			cout << "		[P]	location of partial pile to move. (Ex: 23, move the partial pile at the 2nd pile starting from the 3rd card from the top)\n";
+			cout << "		[P]	location and number of partial pile to move. (Ex: 23, move 3 cards from the top of pile 2)\n";
 			cout << "		[F]	the suit of the foundation to move the card from. (Ex: C)\n";
 			cout << "	destination - location to move card to\n";
 			cout << "		[P]	the pile to move the card to. (Ex: 2, the 2nd pile)\n";
@@ -159,7 +159,7 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 	else if (tokens.at(1) == "fp") {
 		try {
 			int pile = stoi(tokens.at(3)) - 1;
-			if (!Foundation_to_pile(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]])) {
+			if (!Foundation_to_pile(&gamestate->piles[pile], &gamestate->foundations[pile], char_suits[tokens.at(2)[0]])) {
 				cout << "Invalid move!\n";
 			}
 			else {

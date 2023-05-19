@@ -8,7 +8,7 @@ static inline void Update_pile(PILE* pile) {
 		--pile->revealed;
 	}
 	if (pile->revealed < 0) {
-		pile->revealed = 0;
+		pile->revealed = -1;
 	}
 	return;
 }
@@ -57,7 +57,8 @@ static inline bool Stock_to_foundation(STOCK* stock, FOUNDATION* foundation, int
 
 
 		// add foundation card;
-		foundation->stack[foundation->cards++] = stock_card;
+		foundation->stack[foundation->cards] = stock_card;
+		++foundation->cards;
 		
 		// remove stock card
 		stock->stack[stock->faceCard] = NO_CARD;
@@ -91,7 +92,8 @@ static inline bool Pile_to_foundation(PILE* pile,  FOUNDATION* foundation, int f
 		foundation->stack[foundation->cards++] = pile_card;
 
 		// remove pile card
-		pile->pile[--pile->cardNumber] = NO_CARD;
+		--pile->cardNumber;
+		pile->pile[pile->cardNumber] = NO_CARD;
 		Update_pile(pile);
 		return true;
 	}
@@ -102,23 +104,21 @@ static inline bool Foundation_to_pile(PILE* pile,  FOUNDATION* foundation, int f
 	if (foundation->cards != 0) { // cards exist
 		CARDS foundation_card = foundation->stack[foundation->cards - 1]; // Top card
 
-		if (pile->cardNumber != 0) {
-			// Check for opposite color suit and one lower
-			if (get_card_rank(foundation_card) == KING) {
-				return false;
-			}
-			else if ((foundationIndex >> 1) ^ (get_card_suit(pile->pile[pile->cardNumber - 1]) >> 1)) {
-				// ILLEGAL MOVE, not same suit
-				return false;
-			}
-			else if ((foundation_card + 1) != (foundation->stack[foundation->cards - 1])) {
-				// ILLEGAL MOVE, not 1 higher
-				return false;
-			}
+		if (pile->cardNumber == 0 && get_card_rank(foundation_card) != KING) {
+			return false;
+		}
+		else if ((foundationIndex >> 1) ^ (get_card_suit(pile->pile[pile->cardNumber - 1]) >> 1)) {
+			// ILLEGAL MOVE, not same suit
+			return false;
+		}
+		else if ((foundation_card + 1) != (foundation->stack[foundation->cards - 1])) {
+			// ILLEGAL MOVE, not 1 higher
+			return false;
 		}
 
 		// add pile card
-		pile->pile[pile->cardNumber++] = foundation_card;
+		pile->pile[pile->cardNumber] = foundation_card;
+		++pile->cardNumber;
 		Update_pile(pile);
 
 		// remove foundation card;
@@ -135,21 +135,20 @@ static inline bool Pile_to_pile(PILE* pile_from, PILE* pile_to, int card_index) 
 		if ((pile_from->cardNumber - card_index) < pile_from->revealed) {
 			return false;
 		}
-		if (pile_to->cardNumber != 0) {
-			CARDS card_to = pile_to->pile[pile_to->cardNumber - 1];
-			if (get_card_rank(card_from) == KING) {
-				return false;
-			}
-			if ((get_card_suit(card_from) >> 1) && (get_card_suit(card_to) >> 1)) {
-				return false;
-			}
-			if ((get_card_rank(card_from) + 1) != get_card_rank(card_to)) {
-				return false;
-			}
+		if (pile_to->cardNumber == 0 && get_card_rank(card_from) != KING) {
+			return false;
 		}
-		for (int card = 0; card < card_index; ++card) {
-			int moved_from_index = (pile_from->cardNumber - card_index + card);
-			int moved_to_index = (pile_to->cardNumber + card);
+		CARDS card_to = pile_to->pile[pile_to->cardNumber - 1];
+		if ((get_card_suit(card_from) >> 1) && (get_card_suit(card_to) >> 1)) {
+			return false;
+		}
+		if ((get_card_rank(card_from) + 1) != get_card_rank(card_to)) {
+			return false;
+		}
+		
+		for (int card = 0; card < card_index; ++card, --card_index) {
+			int moved_from_index = (pile_from->cardNumber - card_index);
+			int moved_to_index = (pile_to->cardNumber);
 
 			CARDS card_moved = pile_from->pile[moved_from_index];
 

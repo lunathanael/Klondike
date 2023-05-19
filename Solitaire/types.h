@@ -87,7 +87,7 @@ struct TABLE {
 	STOCK stock;
 	PILE piles[NUMBER_OF_PILES];
 	int moves = 0;
-	bool game_result = 0;
+	int game_result = 0;
 	TABLE() {
 		for (int i = 0; i < NUMBER_OF_PILES; ++i) {
 			piles[i].revealed = i; // by index
