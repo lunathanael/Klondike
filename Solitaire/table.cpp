@@ -43,7 +43,7 @@ No_moves:
 
 //static inline 
 void Print_stock_card(STOCK* stock) {
-    if (stock->faceCard == -1 || stock->faceCard == (STOCK_SIZE + 1)) {
+    if (stock->faceCard == -1 || stock->faceCard == (STOCK_SIZE)) {
         cout << "mt";
         return;
     }
@@ -75,9 +75,9 @@ static inline void Print_card(CARDS card) {
     return;
 }
 
-void Print_pile(PILE* pile) {
+void Print_pile(PILE* pile, bool hidden) {
     for (int i = 0; i < pile->cardNumber; ++i) {
-        if (i >= pile->revealed) {
+        if (i >= pile->revealed || !hidden) {
             Print_card(pile->pile[i]);
         }
         else {
@@ -98,7 +98,7 @@ void Print_stack(CARDS cards[], int number_of_cards) {
 }
 
 
-void Print_gamestate(TABLE* gamestate) {
+void Print_gamestate(TABLE* gamestate, bool hidden) {
     cout << endl;
     cout << "Current stock card: ";
     Print_stock_card(&gamestate->stock);
@@ -117,7 +117,7 @@ void Print_gamestate(TABLE* gamestate) {
     for (PILES pile = PILE7; pile >= 0; --pile) {
         // Each card
         cout << endl << pile + 1 << ':';
-        Print_pile(&gamestate->piles[pile]);
+        Print_pile(&gamestate->piles[pile], hidden);
     }
     cout << endl;
     if (Game_over(gamestate)) {
@@ -153,7 +153,8 @@ TABLE Start_game() {
     for (PILES pile = PILE1; pile < NUMBER_OF_PILES;) {
         // Each card
         CARDS* start = (deck.cards + deck.currentCard);
-        deck.currentCard += (++pile);
+        ++pile;
+        deck.currentCard += (pile);
         CARDS* end = (deck.cards + deck.currentCard);
         copy(start, end, gamestate.piles[pile - 1].pile);
     }

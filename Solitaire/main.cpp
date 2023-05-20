@@ -1,6 +1,7 @@
 #include "types.h"
 #include "table.h"
 #include "moves.h"
+#include "search.h"
 
 // IO
 #include <iostream>
@@ -57,7 +58,8 @@ static void Parse_help(vector<string> tokens) {
 			cout << "		sp	move a card from the stock to a pile, only destination is needed to be specified.\n";
 			cout << "		sf	move a card from the stock to a foundation, only destination is needed to be specified.\n";
 			cout << "		pf	move a card from a pile to a foundation.\n";
-			cout << "		fp	move a card from a foundation to a pile.\n\n";
+			cout << "		fp	move a card from a foundation to a pile.\n";
+			cout << "		hint	have the computer play a move for you.\n\n";
 			cout << "	source - location to move card from\n";
 			cout << "		[P]	location and number of partial pile to move. (Ex: 23, move 3 cards from the top of pile 2)\n";
 			cout << "		[F]	the suit of the foundation to move the card from. (Ex: C)\n";
@@ -127,11 +129,7 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 	}
 	else if (tokens.at(1) == "sf") {
 		try {
-			if (tokens.at(2).length() != 1) {
-				cout << "Formatting error!\n";
-				return;
-			}
-			if (!Stock_to_foundation(&gamestate->stock, &gamestate->foundations[char_suits[tokens.at(2)[0]]], char_suits[tokens.at(2)[0]])) {
+			if (!Stock_to_foundation(gamestate)) {
 				cout << "Invalid move!\n";
 			}
 			else {
@@ -145,7 +143,7 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 	else if (tokens.at(1) == "pf") {
 		try {
 			int pile = stoi(tokens.at(2)) - 1;
-			if (!Pile_to_foundation(&gamestate->piles[pile], &gamestate->foundations[char_suits[tokens.at(3)[0]]], char_suits[tokens.at(3)[0]])) {
+			if (!Pile_to_foundation(gamestate, pile)) {
 				cout << "Invalid move!\n";
 			}
 			else {
@@ -169,6 +167,15 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 
 		catch (...) {
 			cout << "Formatting error!\n";
+		}
+	}
+	else if (tokens.at(1) == "hint") {
+		if (Move_hint(gamestate)) {
+			++gamestate->moves;
+		}
+
+		else {
+			cout << "No moves found.\n";
 		}
 	}
 	else {
