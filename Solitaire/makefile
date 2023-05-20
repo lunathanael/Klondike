@@ -2,4 +2,6 @@ SRCS=$(wildcard *.cpp)
 NAME=Klondike
 
 all :
-	g++ -Ofast $(SRCS) -o $(NAME)
+	g++ -Og $(SRCS) -o $(NAME)
+release :
+	g++ -Ofast $(SRCS) -static -o $(NAME)

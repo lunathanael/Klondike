@@ -12,13 +12,13 @@ using namespace std;
 
 enum COMMANDS
 {
-	unrecognized_command, new_game, display_screen, help, quit, move_command
+	unrecognized_command, new_game, display_screen, help, quit, move_command, search_command
 };
 
 #include <map>
 static map<string, COMMANDS> MAP_COMMANDS =
 {
-	{"newgame", new_game}, {"d", display_screen}, {"help", help}, {"quit", quit}, {"move", move_command}
+	{"newgame", new_game}, {"d", display_screen}, {"help", help}, {"quit", quit}, {"move", move_command}, {"search", search_command}
 };
 
 
@@ -36,7 +36,7 @@ static void Parse_help(vector<string> tokens) {
 		}
 		case (help):
 		{
-			cout << "Provides help information for commands.\n\nhelp command\n\n	command - displays help information on that command.";
+			cout << "Provides help information for commands.\n\nhelp command\n\n	command - displays help information on that command.\n\n";
 			break;
 		}
 		case (display_screen):
@@ -51,22 +51,20 @@ static void Parse_help(vector<string> tokens) {
 		}
 		case (move_command):
 		{
-			cout << "Move card location.\n\nmove [operation] [source] [destination]\n\n";
+			cout << "Move card location.\n\nmove operation [source] [destination]\n\n";
 			cout << "	operation - type of move to be performed\n";
-			cout << "		 T	move the stock card to the waste pile or turning over the stock.\n";
+			cout << "		 T	move the stock card to the waste pile or turning over the stock.\n\n";
 			cout << "		pp	move a partial pile or card from one pile to another.\n";
+			cout << "			-[source]	location and number of partial pile to move.\n					(Ex: 23, move 3 cards from the top of pile 2)\n";
+			cout << "			-[destination]	location of pile to move to.\n\n";
 			cout << "		sp	move a card from the stock to a pile, only destination is needed to be specified.\n";
-			cout << "		sf	move a card from the stock to a foundation, only destination is needed to be specified.\n";
+			cout << "			-[destination]	location of pile to move to.\n\n";
+			cout << "		sf	move a card from the stock to a foundation.\n\n";
 			cout << "		pf	move a card from a pile to a foundation.\n";
+			cout << "			-[source]	location of pile to move the card from. (Ex: 2, move a card from the top of pile 2)\n\n";
 			cout << "		fp	move a card from a foundation to a pile.\n";
+			cout << "			-[destination]	location of pile to move to.\n\n";
 			cout << "		hint	have the computer play a move for you.\n\n";
-			cout << "	source - location to move card from\n";
-			cout << "		[P]	location and number of partial pile to move. (Ex: 23, move 3 cards from the top of pile 2)\n";
-			cout << "		[F]	the suit of the foundation to move the card from. (Ex: C)\n";
-			cout << "	destination - location to move card to\n";
-			cout << "		[P]	the pile to move the card to. (Ex: 2, the 2nd pile)\n";
-			cout << "		[F]	the suit of the foundation to move the card to. (Ex: C)\n\n";
-			cout << "Note: Illegal moves will be ignored.\n\n";
 			break;
 		}
 		case (unrecognized_command):
@@ -185,6 +183,51 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 	return;
 }
 
+void Parse_search(const string& input, TABLE* gamestate) {
+	vector<string> tokens = split_command(input);
+	bool output = false;
+	if (input.find("-o") != string::npos) {
+		output = true;
+	}
+
+	if (input.find("finish") != string::npos) {
+		if (Search_helper_function(gamestate, output)) {
+			cout << "Game Won!\n";
+		}
+		else {
+			cout << "Game over, no moves left.\n";
+		}
+	}
+	else  {
+
+		try {
+			int games_simulated = stoi(tokens.at(1));
+			int games_won = 0;
+			for (int game = 0; game < games_simulated; ++game) {
+				TABLE new_gamestate = Start_game();
+				if (Search_helper_function(&new_gamestate, output)) {
+					++games_won;
+					if (output) {
+						cout << "Victory!\n";
+					}
+				}
+				else {
+					if (output) {
+						cout << "Loss!\n";
+					}
+				}
+			}
+			cout << "Games won: " << games_won << ", Games lost: " << (games_simulated - games_won) << "\n";
+		}
+		catch (...) {
+			cout << "Formatting error!\n";
+		}
+	}
+	return;
+}
+
+
+
 
 int main() {
 	cout << "Welcome to Solitaire: Klondike, a command-line game by Nathanael Lu.\n";
@@ -248,6 +291,11 @@ int main() {
 				else {
 					cout << "No game available!\n";
 				}
+				break;
+			}
+			case (search_command):
+			{
+				Parse_search(input, &gamestate);
 				break;
 			}
 			case (unrecognized_command):

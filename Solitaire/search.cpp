@@ -5,7 +5,25 @@
 using namespace std;
 
 
-static inline bool Search_pp(TABLE *gamestate) {
+
+static inline bool Game_over(TABLE* gamestate) {
+
+    for (int foundation = 0; foundation < NUMBER_OF_SUITS; ++foundation) {
+        if (gamestate->foundations[foundation].cards != CARDS_IN_SUIT) {
+            goto No_moves;
+        }
+    }
+    gamestate->game_result = 1;
+    return true;
+
+
+No_moves:
+    return false;
+}
+
+
+
+static inline bool Search_pp(TABLE *gamestate, bool output) {
     int pile_chains[NUMBER_OF_PILES];
 
 
@@ -47,7 +65,9 @@ static inline bool Search_pp(TABLE *gamestate) {
                 continue;
             }
             if (Pile_to_pile(&gamestate->piles[pile_index], &gamestate->piles[pile_target], pile_chains[pile_index])) {
-                cout << "Moved " << pile_chains[pile_index] << " card(s) from pile " << (pile_index + 1) << " to pile " << (pile_target + 1) << ".\n";
+                if (output) {
+                    cout << "Moved " << pile_chains[pile_index] << " card(s) from pile " << (pile_index + 1) << " to pile " << (pile_target + 1) << ".\n";
+                }
                 return true;
             }
         }
@@ -57,17 +77,25 @@ static inline bool Search_pp(TABLE *gamestate) {
 }
 
 
-bool Move_hint(TABLE* gamestate) {
+bool Move_hint(TABLE* gamestate, bool output) {
     try {
+        if (Game_over(gamestate)) {
+            return false;
+        }
+
         // sf
         if (Stock_to_foundation(gamestate)) {
-            cout << "Moved card from stock to foundation.\n";
+            if (output) {
+                cout << "Moved card from stock to foundation.\n";
+            }
             return true;
         }
         // pf
         for (PILES pile = PILE7; pile >= 0; --pile) {
             if (Pile_to_foundation(gamestate, pile)) {
-                cout << "Moved card from pile " << (pile + 1) << " to foundation.\n";
+                if (output) {
+                    cout << "Moved card from pile " << (pile + 1) << " to foundation.\n";
+                }
                 return true;
             }
         }
@@ -75,21 +103,18 @@ bool Move_hint(TABLE* gamestate) {
         // sp
         for (PILES pile = PILE7; pile >= 0; --pile) {
             if (Stock_to_pile(&gamestate->piles[pile], &gamestate->stock)) {
-                cout << "Moved card from stock to pile " << (pile + 1) << ".\n";
+                if (output) {
+                    cout << "Moved card from stock to pile " << (pile + 1) << ".\n";
+                }
                 return true;
             }
         }
 
         // pp
-        if (Search_pp(gamestate)) {
+        if (Search_pp(gamestate, output)) {
             return true;
         }
 
-        // T
-        if (Turn_stock(&gamestate->stock)) {
-            cout << "Turned stock.\n";
-            return true;
-        }
 
         return false;
     }
@@ -100,6 +125,40 @@ bool Move_hint(TABLE* gamestate) {
 
     return false;
 
+}
+
+bool Search_helper_function(TABLE* gamestate, bool output) {
+    int card_flips = -1;
+    while (true) {
+        if (Move_hint(gamestate, output)) {
+            ++gamestate->moves;
+            card_flips = -1;
+            continue;
+        }
+        else if (gamestate->game_result != 0) {
+            if (gamestate->game_result == 1) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (card_flips > STOCK_SIZE) {
+            break;
+        }
+        else if (Turn_stock(&gamestate->stock)) {
+            if (output) {
+                cout << "Turned stock.\n";
+            }
+            ++gamestate->moves;
+            ++card_flips;
+            continue;
+        }
+        else {
+            break;
+        }
+    }
+    return false;
 }
 
 
