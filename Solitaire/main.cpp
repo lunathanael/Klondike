@@ -2,6 +2,7 @@
 #include "table.h"
 #include "moves.h"
 #include "search.h"
+#include "init.h"
 
 // IO
 #include <iostream>
@@ -230,6 +231,8 @@ void Parse_search(const string& input, TABLE* gamestate) {
 
 
 int main() {
+	Init_all();
+
 	cout << "Welcome to Solitaire: Klondike, a command-line game by Nathanael Lu.\n";
 	cout << "Type \"help\" for command options.\n";
 
