@@ -6,7 +6,7 @@ using namespace std;
 
 
 
-static inline bool Game_over(TABLE* gamestate) {
+static inline bool Game_over(GAMESTATE* gamestate) {
 
     for (int foundation = 0; foundation < NUMBER_OF_SUITS; ++foundation) {
         if (gamestate->foundations[foundation].cards != CARDS_IN_SUIT) {
@@ -23,7 +23,7 @@ No_moves:
 
 
 
-static inline bool Search_pp(TABLE *gamestate, bool output) {
+static inline bool Search_pp(GAMESTATE *gamestate, bool output) {
     int pile_chains[NUMBER_OF_PILES];
 
 
@@ -77,7 +77,7 @@ static inline bool Search_pp(TABLE *gamestate, bool output) {
 }
 
 
-bool Move_hint(TABLE* gamestate, bool output) {
+bool Move_hint(GAMESTATE * gamestate, bool output) {
     try {
         if (Game_over(gamestate)) {
             return false;
@@ -127,7 +127,7 @@ bool Move_hint(TABLE* gamestate, bool output) {
 
 }
 
-bool Search_helper_function(TABLE* gamestate, bool output) {
+bool Search_helper_function(GAMESTATE* gamestate, bool output) {
     int card_flips = -1;
     while (true) {
         if (Move_hint(gamestate, output)) {

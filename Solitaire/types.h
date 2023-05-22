@@ -84,13 +84,14 @@ struct PILE {
 };
 
 
-struct TABLE {
+struct GAMESTATE
+{
 	FOUNDATION foundations[NUMBER_OF_SUITS];
 	STOCK stock;
 	PILE piles[NUMBER_OF_PILES];
 	int moves = 0;
 	int game_result = 0;
-	TABLE() {
+	GAMESTATE() {
 		for (int i = 0; i < NUMBER_OF_PILES; ++i) {
 			piles[i].revealed = i; // by index
 			piles[i].cardNumber = i + 1;

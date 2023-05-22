@@ -36,7 +36,7 @@ static inline bool Turn_stock(STOCK* stock) {
 	return true;
 };
 
-static inline bool Stock_to_foundation(TABLE* gamestate) {
+static inline bool Stock_to_foundation(GAMESTATE * gamestate) {
 	STOCK* stock = &gamestate->stock;
 	if (stock->faceCard != -1 && stock->faceCard != STOCK_SIZE) { // faceCard exists
 		CARDS stock_card = stock->stack[stock->faceCard];
@@ -67,7 +67,7 @@ static inline bool Stock_to_foundation(TABLE* gamestate) {
 	return false;
 }
 
-static inline bool Pile_to_foundation(TABLE * gamestate, int pile_index) {
+static inline bool Pile_to_foundation(GAMESTATE * gamestate, int pile_index) {
 	PILE* pile = &gamestate->piles[pile_index];
 	if (pile->cardNumber != 0) { // cards exist
 		CARDS pile_card = pile->pile[pile->cardNumber - 1]; // Top card
