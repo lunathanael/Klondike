@@ -165,7 +165,6 @@ TABLE Start_game() {
     CARDS* end = (deck.cards + deck.currentCard);
     copy(start, end, gamestate.stock.stack);
 
-
     return gamestate;
 }
 

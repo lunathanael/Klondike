@@ -22,8 +22,8 @@ void Fill_deck(DECK* deck) {
 void Shuffle_deck(DECK*deck)
 {
     // time-based seed
-    unsigned seed = time(NULL);
-    shuffle(deck->cards, deck->cards + DECK_SIZE, default_random_engine(seed));
+    //shuffle(deck->cards, deck->cards + DECK_SIZE, default_random_engine(seed));
+    random_shuffle(deck->cards, deck->cards + DECK_SIZE);
 }
 
 
