@@ -14,7 +14,6 @@ static constexpr int STOCK_SIZE = (ALL_DECKS_SIZE - (NUMBER_OF_PILES * (NUMBER_O
 
 static constexpr int MAX_PILE_SIZE = (CARDS_IN_SUIT + NUMBER_OF_PILES);
 
-//static unsigned random_seed;
 
 enum RANKS : int{
 	ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, NO_RANK
@@ -25,10 +24,10 @@ enum SUITS : int {
 }; // 00 01 10 11
 
 enum CARDS : int {
-	CA, C2, C3, C4, C5, C6, C7, C8, C9, CT, CJ, CQ, CK,
+	NO_CARD, CA, C2, C3, C4, C5, C6, C7, C8, C9, CT, CJ, CQ, CK,
 	SA, S2, S3, S4, S5, S6, S7, S8, S9, ST, SJ, SQ, SK,
 	DA, D2, D3, D4, D5, D6, D7, D8, D9, DT, DJ, DQ, DK,
-	HA, H2, H3, H4, H5, H6, H7, H8, H9, HT, HJ, HQ, HK, NO_CARD
+	HA, H2, H3, H4, H5, H6, H7, H8, H9, HT, HJ, HQ, HK
 };
 
 // left to right
@@ -36,15 +35,6 @@ enum PILES : int {
 	PILE1, PILE2, PILE3, PILE4, PILE5, PILE6, PILE7
 };
 
-
-
-struct CARD {
-	RANKS rank;
-	SUITS suit;
-	bool revealed = false;
-};
-
-#include <algorithm>
 
 struct DECK {
 	CARDS cards[DECK_SIZE];
@@ -117,6 +107,12 @@ ENABLE_INCR_OPERATORS_ON(PILES)
 ENABLE_INCR_OPERATORS_ON(SUITS)
 
 
+
+
+
+/* SEARCH INFORMATION */
+
+static constexpr MAX_DEPTH = 64;
 
 
 

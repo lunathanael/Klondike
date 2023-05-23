@@ -90,6 +90,7 @@ bool Move_hint(TABLE* gamestate, bool output) {
             }
             return true;
         }
+
         // pf
         for (PILES pile = PILE7; pile >= 0; --pile) {
             if (Pile_to_foundation(gamestate, pile)) {
@@ -163,6 +164,16 @@ bool Search_helper_function(TABLE* gamestate, bool output) {
 
 
 
+void Search_reveal() {
+    return;
+}
+
+void Search_iterative_victory() {
+    for (int depth = 1; depth <= MAX_DEPTH; ++depth) {
+        continue;
+    }
+    return;
+}
 
 
 
