@@ -1,5 +1,5 @@
 #include "types.h"
-#include "table.h"
+#include "gamestate.h"
 #include "moves.h"
 #include "search.h"
 #include "init.h"
@@ -78,7 +78,7 @@ static void Parse_help(vector<string> tokens) {
 }
 
 
-void Parse_move(vector<string> tokens, TABLE*gamestate) {
+void Parse_move(vector<string> tokens, GAMESTATE*gamestate) {
 	if (tokens.size() == 1) {
 		cout << "Invalid command size!\n";
 	}
@@ -184,7 +184,7 @@ void Parse_move(vector<string> tokens, TABLE*gamestate) {
 	return;
 }
 
-void Parse_search(const string& input, TABLE* gamestate) {
+void Parse_search(const string& input, GAMESTATE * gamestate) {
 	vector<string> tokens = split_command(input);
 	bool output = false;
 	if (input.find("-o") != string::npos) {
@@ -205,7 +205,7 @@ void Parse_search(const string& input, TABLE* gamestate) {
 			int games_simulated = stoi(tokens.at(1));
 			int games_won = 0;
 			for (int game = 0; game < games_simulated; ++game) {
-				TABLE new_gamestate = Start_game();
+				GAMESTATE new_gamestate = Start_game();
 				if (Search_helper_function(&new_gamestate, output)) {
 					++games_won;
 					if (output) {
@@ -236,7 +236,7 @@ int main() {
 	cout << "Welcome to Solitaire: Klondike, a command-line game by Nathanael Lu.\n";
 	cout << "Type \"help\" for command options.\n";
 
-	TABLE gamestate;
+	GAMESTATE gamestate;
 	bool gamestarted = false;
 	while (true) {
 		string input;

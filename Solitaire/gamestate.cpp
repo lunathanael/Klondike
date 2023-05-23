@@ -1,4 +1,4 @@
-#include "table.h"
+#include "gamestate.h"
 #include "deck.h"
 
 #include <random>
@@ -26,7 +26,7 @@ const char ascii_ranks[] = "A23456789TJQK";
 
 
 
-static inline bool Game_over(TABLE* gamestate) {
+static inline bool Game_over(GAMESTATE* gamestate) {
 
     for (int foundation = 0; foundation < NUMBER_OF_SUITS; ++foundation) {
         if (gamestate->foundations[foundation].cards != CARDS_IN_SUIT) {
@@ -98,7 +98,7 @@ void Print_stack(CARDS cards[], int number_of_cards) {
 }
 
 
-void Print_gamestate(TABLE* gamestate, bool hidden) {
+void Print_gamestate(GAMESTATE * gamestate, bool hidden) {
     cout << endl;
     cout << "Current stock card: ";
     Print_stock_card(&gamestate->stock);
@@ -141,8 +141,8 @@ void Print_gamestate(TABLE* gamestate, bool hidden) {
 
 
 
-TABLE Start_game() {
-    TABLE gamestate;
+GAMESTATE Start_game() {
+    GAMESTATE gamestate;
 
 
     DECK deck;
