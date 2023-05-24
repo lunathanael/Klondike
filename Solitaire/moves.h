@@ -38,7 +38,8 @@ static inline bool Turn_stock(STOCK* stock) {
 
 static inline bool Stock_to_foundation(GAMESTATE * gamestate) {
 	STOCK* stock = &gamestate->stock;
-	if (stock->faceCard != -1 && stock->faceCard != STOCK_SIZE) { // faceCard exists
+	bool stock_displaying_card = (stock->faceCard != -1 && stock->faceCard != STOCK_SIZE);
+	if (stock_displaying_card) {
 		CARDS stock_card = stock->stack[stock->faceCard];
 		int foundation_index = get_card_suit(stock_card);
 		FOUNDATION* foundation = &gamestate->foundations[foundation_index];
@@ -48,9 +49,12 @@ static inline bool Stock_to_foundation(GAMESTATE * gamestate) {
 				return false;
 			}
 		}
-		else if ((stock_card - 1) != (foundation->stack[foundation->cards - 1])) {
-			// ILLEGAL MOVE, not 1 higher
-			return false;
+		else {
+			bool stock_card_is_one_higher = ((stock_card - 1) == (foundation->stack[foundation->cards - 1]));
+			if (!stock_card_is_one_higher) {
+				// ILLEGAL MOVE, not 1 higher
+				return false;
+			}
 		}
 
 
@@ -108,7 +112,9 @@ static inline bool Foundation_to_pile(PILE* pile,  FOUNDATION* foundation, int f
 			// ILLEGAL MOVE, not same suit
 			return false;
 		}
-		else if ((foundation_card + 1) != (foundation->stack[foundation->cards - 1])) {
+		else {
+			bool card_is_one_higher = (get_card_rank(foundation_card + 1)) != (get_card_rank(pile->pile[pile->cardNumber - 1]));
+			if (card_is_one_higher) {
 			// ILLEGAL MOVE, not 1 higher
 			return false;
 		}
