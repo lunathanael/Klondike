@@ -1,4 +1,4 @@
-# Turing Machine in C++
+# Klondike in C++
 This project implements a game of Klondike in C++. It's designed to provide a practical and flexible foundation for simulating the game with customizable parameters with a simple AI implemented. 
 
 ## Features
